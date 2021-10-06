@@ -632,7 +632,7 @@ namespace vcpkg::Build
         if (!get_environment_variable("VCPKG_FORCE_SYSTEM_BINARIES").has_value())
         {
             const Path& git_exe_path = paths.get_tool_exe(Tools::GIT);
-            out_vars.push_back({"GIT", git_exe_path});
+            out_vars.emplace_back("GIT", git_exe_path);
         }
     }
 
@@ -731,7 +731,7 @@ namespace vcpkg::Build
         // bootstrap should have already downloaded ninja, but making sure it is present in case it was deleted.
         (void)(paths.get_tool_exe(Tools::NINJA));
 #endif
-        auto& scfl = action.source_control_file_and_location.value_or_exit(VCPKG_LINE_INFO);
+        const auto& scfl = action.source_control_file_and_location.value_or_exit(VCPKG_LINE_INFO);
         auto& scf = *scfl.source_control_file;
 
         std::string all_features;
@@ -754,7 +754,7 @@ namespace vcpkg::Build
 
         for (auto cmake_arg : args.cmake_args)
         {
-            variables.push_back(CMakeVariable{cmake_arg});
+            variables.emplace_back(cmake_arg);
         }
 
         if (action.build_options.backcompat_features == BackcompatFeatures::PROHIBIT)
@@ -770,7 +770,7 @@ namespace vcpkg::Build
 
         if (Util::Enum::to_bool(action.build_options.only_downloads))
         {
-            variables.push_back({"VCPKG_DOWNLOAD_MODE", "true"});
+            variables.emplace_back("VCPKG_DOWNLOAD_MODE", "true");
         }
 
         const Filesystem& fs = paths.get_filesystem();
@@ -803,7 +803,7 @@ namespace vcpkg::Build
 
     Path PreBuildInfo::toolchain_file() const
     {
-        if (auto p = external_toolchain_file.get())
+        if (const auto *p = external_toolchain_file.get())
         {
             return *p;
         }
@@ -949,7 +949,7 @@ namespace vcpkg::Build
                                                                             triplet,
                                                                             build_info,
                                                                             action.public_abi(),
-                                                                            std::move(find_itr->second));
+                                                                            find_itr->second);
 
         if (error_count != 0)
         {

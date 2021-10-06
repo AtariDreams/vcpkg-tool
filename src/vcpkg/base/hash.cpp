@@ -191,14 +191,14 @@ namespace vcpkg::Hash
             return value << by;
         }
 
-        static std::uint32_t shr32(std::uint32_t value, int by) noexcept { return value >> by; }
-        static std::uint32_t ror32(std::uint32_t value, int by) noexcept
+        std::uint32_t shr32(std::uint32_t value, int by) noexcept { return value >> by; }
+        std::uint32_t ror32(std::uint32_t value, int by) noexcept
         {
             return (value >> by) | (value << (32 - by));
         }
 
-        static std::uint64_t shr64(std::uint64_t value, int by) noexcept { return value >> by; }
-        static std::uint64_t ror64(std::uint64_t value, int by) noexcept
+        std::uint64_t shr64(std::uint64_t value, int by) noexcept { return value >> by; }
+        std::uint64_t ror64(std::uint64_t value, int by) noexcept
         {
             return (value >> by) | (value << (64 - by));
         }
@@ -208,7 +208,7 @@ namespace vcpkg::Hash
         {
             ShaHasher() = default;
 
-            virtual void add_bytes(const void* start, const void* end) noexcept override
+            void add_bytes(const void* start, const void* end) noexcept override
             {
                 for (;;)
                 {
@@ -223,7 +223,7 @@ namespace vcpkg::Hash
                 }
             }
 
-            virtual void clear() noexcept override
+            void clear() noexcept override
             {
                 m_impl.clear();
 
@@ -232,7 +232,7 @@ namespace vcpkg::Hash
                 m_message_length = 0;
             }
 
-            virtual std::string get_hash() noexcept override
+            std::string get_hash() noexcept override
             {
                 process_last_chunk();
                 return to_hex(m_impl.begin(), m_impl.end());
@@ -410,7 +410,7 @@ namespace vcpkg::Hash
             std::uint32_t* begin() noexcept { return &m_digest[0]; }
             std::uint32_t* end() noexcept { return &m_digest[8]; }
 
-            std::uint32_t m_digest[8];
+            std::uint32_t m_digest[8]{};
         };
 
         struct Sha512Algorithm
@@ -504,7 +504,7 @@ namespace vcpkg::Hash
             std::uint64_t* begin() noexcept { return &m_digest[0]; }
             std::uint64_t* end() noexcept { return &m_digest[8]; }
 
-            std::uint64_t m_digest[8];
+            std::uint64_t m_digest[8]{};
         };
 
         // This is required on older compilers, since it was required in C++14

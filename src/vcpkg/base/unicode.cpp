@@ -115,8 +115,8 @@ namespace vcpkg::Unicode
 
     struct Utf8Category : std::error_category
     {
-        const char* name() const noexcept override;
-        std::string message(int condition) const override;
+        [[nodiscard]] const char* name() const noexcept override;
+        [[nodiscard]] std::string message(int condition) const override;
     };
 
     const char* Utf8Category::name() const noexcept { return "utf8"; }

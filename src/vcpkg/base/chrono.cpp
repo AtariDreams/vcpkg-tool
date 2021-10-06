@@ -39,7 +39,7 @@ namespace vcpkg
             return nullopt;
         }
 #else
-        auto null_if_failed = gmtime_r(&t, &parts);
+        auto *null_if_failed = gmtime_r(&t, &parts);
         if (null_if_failed == nullptr)
         {
             return nullopt;
@@ -123,7 +123,7 @@ namespace vcpkg
     {
         const std::time_t ct = get_current_time_as_time_since_epoch();
         const Optional<tm> opt = to_utc_time(ct);
-        if (auto p_tm = opt.get())
+        if (const auto *p_tm = opt.get())
         {
             return CTime{*p_tm};
         }
